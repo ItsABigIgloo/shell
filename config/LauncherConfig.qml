@@ -31,6 +31,14 @@ JsonObject {
 
     property list<var> actions: [
         {
+            name: "Welcome",
+            icon: "caelestia",
+            description: "Welcome to Caelestia",
+            command: ["caelestia", "shell", "welcome", "open"],
+            enabled: true,
+            dangerous: false
+        },
+        {
             name: "Calculator",
             icon: "calculate",
             description: "Do simple math equations (powered by Qalc)",
