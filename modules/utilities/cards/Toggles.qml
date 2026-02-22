@@ -72,11 +72,11 @@ StyledRect {
                 }
             }
 
-            Toggle {
-                icon: "notifications_off"
-                checked: Notifs.dnd
-                onClicked: Notifs.dnd = !Notifs.dnd
-            }
+            //Toggle {
+                //icon: "notifications_off"
+                //checked: Notifs.dnd
+                //onClicked: Notifs.dnd = !Notifs.dnd
+            //}
 
             //Toggle {
                 //icon: "gamepad"
