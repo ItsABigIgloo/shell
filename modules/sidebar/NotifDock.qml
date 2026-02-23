@@ -95,14 +95,14 @@ Item {
 
                 Image {
                     asynchronous: true
-                    source: Qt.resolvedUrl(`${Quickshell.shellDir}/assets/dino.png`)
+                    source: Qt.resolvedUrl(`${Quickshell.shellDir}/assets/dawn.png`)
                     fillMode: Image.PreserveAspectFit
                     sourceSize.width: clipRect.width * 0.8
 
                     layer.enabled: true
                     layer.effect: Colouriser {
                         colorizationColor: Colours.palette.m3outlineVariant
-                        brightness: 1
+                        brightness: .8
                     }
                 }
 
