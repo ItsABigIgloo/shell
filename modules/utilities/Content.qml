@@ -19,7 +19,6 @@ Item {
         anchors.fill: parent
         spacing: Appearance.spacing.normal
 
-<<<<<<< HEAD
         BlueLightFilter {}
 
         Record {
