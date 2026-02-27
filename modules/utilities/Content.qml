@@ -19,7 +19,8 @@ Item {
         anchors.fill: parent
         spacing: Appearance.spacing.normal
 
-        //IdleInhibit {}
+<<<<<<< HEAD
+        BlueLightFilter {}
 
         Record {
             props: root.props
