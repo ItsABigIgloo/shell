@@ -13,6 +13,9 @@ StyledRect {
     required property var props
     required property DrawerVisibilities visibilities
 
+    Component.onCompleted: Tour.register("utilities-recorder", root)
+    Component.onDestruction: Tour.unregister("utilities-recorder")
+
     Layout.fillWidth: true
     implicitHeight: layout.implicitHeight + layout.anchors.margins * 2
 

@@ -4,6 +4,7 @@ import Quickshell
 import qs.components
 import qs.components.controls
 import qs.config
+import qs.services
 import qs.modules.bar as Bar
 import qs.modules.bar.popouts as BarPopouts
 
@@ -58,7 +59,7 @@ CustomMouseArea {
 
     onPressed: event => dragStart = Qt.point(event.x, event.y)
     onContainsMouseChanged: {
-        if (!containsMouse) {
+        if (!containsMouse && !Tour.tourActive) {
             // Only hide if not activated by shortcut
             if (!osdShortcutActive) {
                 visibilities.osd = false;
