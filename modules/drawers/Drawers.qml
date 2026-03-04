@@ -179,7 +179,8 @@ Variants {
                 anchors.fill: parent
                 active: tourOverlayActive
                 z: 10000
-                source: "../tour/TourOverlayContent.qml"
+
+                source: "../live/tour/TourOverlayContent.qml"
 
                 property bool tourOverlayActive: Tour.spotlightActive || Tour.tourActive
 
