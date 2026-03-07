@@ -30,6 +30,11 @@ ColumnLayout {
     }
 
     function checkPopout(y: real): void {
+        // Prevent hover-events from closing the Overview or ActiveWindow popouts
+        if ((popouts.currentName === "activewindow" || popouts.currentName === "overview") && popouts.hasCurrent) {
+        return;
+        }
+
         const ch = childAt(width / 2, y) as WrappedLoader;
 
         if (ch?.id !== "tray")
@@ -43,7 +48,6 @@ ColumnLayout {
         const id = ch.id;
         const top = ch.y;
         const item = ch.item;
-        const itemHeight = item.implicitHeight;
 
         if (id === "statusIcons" && Config.bar.popouts.statusIcons) {
             const items = item.items;
@@ -68,10 +72,6 @@ ColumnLayout {
                 popouts.hasCurrent = false;
                 item.expanded = true;
             }
-        } else if (id === "activeWindow" && Config.bar.popouts.activeWindow) {
-            popouts.currentName = id.toLowerCase();
-            popouts.currentCenter = item.mapToItem(root, 0, itemHeight / 2).y;
-            popouts.hasCurrent = true;
         }
     }
 
@@ -105,7 +105,6 @@ ColumnLayout {
 
     Repeater {
         id: repeater
-
         model: Config.bar.entries
 
         DelegateChooser {
@@ -120,6 +119,11 @@ ColumnLayout {
             DelegateChoice {
                 roleValue: "logo"
                 delegate: WrappedLoader {
+                    onLoaded: {
+                    if (item) {
+                        item.barRef = root;
+                        }
+                    }
                     sourceComponent: OsIcon {}
                 }
             }
@@ -178,8 +182,7 @@ ColumnLayout {
             const count = repeater.count;
             for (let i = 0; i < count; i++) {
                 const item = repeater.itemAt(i);
-                if (item?.enabled)
-                    return item;
+                if (item?.enabled) return item;
             }
             return null;
         }
@@ -187,15 +190,12 @@ ColumnLayout {
         function findLastEnabled(): Item {
             for (let i = repeater.count - 1; i >= 0; i--) {
                 const item = repeater.itemAt(i);
-                if (item?.enabled)
-                    return item;
+                if (item?.enabled) return item;
             }
             return null;
         }
 
         Layout.alignment: Qt.AlignHCenter
-
-        // Cursed ahh thing to add padding to first and last enabled components
         Layout.topMargin: findFirstEnabled() === this ? root.vPadding : 0
         Layout.bottomMargin: findLastEnabled() === this ? root.vPadding : 0
 

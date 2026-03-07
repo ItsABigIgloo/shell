@@ -37,6 +37,7 @@ Singleton {
     property string lastSpecialWorkspace: ""
 
     signal configReloaded
+    signal toggleOverviewRequested()
 
     function dispatch(request: string): void {
         Hyprland.dispatch(request);
@@ -191,6 +192,12 @@ Singleton {
             extras.refreshDevices();
         }
 
+        // --- OUR NEW IPC BACKDOOR ---
+        function toggleOverview(): void {
+            root.toggleOverviewRequested();
+        }
+        // ----------------------------
+
         function cycleSpecialWorkspace(direction: string): void {
             root.cycleSpecialWorkspace(direction);
         }
@@ -201,12 +208,18 @@ Singleton {
     }
 
     CustomShortcut {
+        name: "toggleOverview"
+        description: "Toggle the Workspace Overview"
+        onPressed: root.toggleOverviewRequested()
+    }
+
+    CustomShortcut {
         name: "refreshDevices"
         description: "Reload devices"
         onPressed: extras.refreshDevices()
         onReleased: extras.refreshDevices()
     }
-
+    
     HyprExtras {
         id: extras
     }
