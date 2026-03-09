@@ -6,6 +6,9 @@ import qs.config
 Item {
     id: root
 
+    Component.onCompleted: Tour.register("taskbar-power-button", root)
+    Component.onDestruction: Tour.unregister("taskbar-power-button")
+
     required property DrawerVisibilities visibilities
 
     implicitWidth: icon.implicitHeight + Appearance.padding.small * 2
