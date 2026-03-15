@@ -7,16 +7,13 @@ import QtQuick
 
 Item {
     id: root
-    
-    property var barRef: null 
+
+    implicitWidth: Math.round(Appearance.font.size.large * 1.2)
+    implicitHeight: Math.round(Appearance.font.size.large * 1.2)
 
     MouseArea {
-        id: mouseArea
         anchors.fill: parent
-        hoverEnabled: true
-        propagateComposedEvents: true 
         cursorShape: Qt.PointingHandCursor
-
         onClicked: (mouse) => {
             const name = "overview"
             let p = typeof popouts !== "undefined" ? popouts : (barRef ? barRef.popouts : null);
@@ -38,8 +35,25 @@ Item {
 
     Loader {
         anchors.centerIn: parent
-        source: SysInfo.osLogo 
-        implicitSize: Appearance.font.size.large * 1.2
-        colour: Colours.palette.m3tertiary
+        sourceComponent: SysInfo.isDefaultLogo ? caelestiaLogo : distroIcon
+    }
+
+    Component {
+        id: caelestiaLogo
+
+        Logo {
+            implicitWidth: Math.round(Appearance.font.size.large * 1.6)
+            implicitHeight: Math.round(Appearance.font.size.large * 1.6)
+        }
+    }
+
+    Component {
+        id: distroIcon
+
+        ColouredIcon {
+            source: SysInfo.osLogo
+            implicitSize: Math.round(Appearance.font.size.large * 1.2)
+            colour: Colours.palette.m3tertiary
+        }
     }
 }

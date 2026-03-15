@@ -20,14 +20,14 @@ StyledRect {
         return Config.utilities.quickToggles.filter(item => {
             if (!item.enabled)
                 return false;
-            
+
             if (seenIds.has(item.id)) {
                 return false;
             }
 
             if (item.id === "vpn") {
-                return Config.utilities.vpn.provider.some(p => 
-                    typeof p === "object" ? (p.enabled === true) : false
+                return Config.utilities.vpn.provider.some(p =>
+                typeof p === "object" ? (p.enabled === true) : false
                 );
             }
 
@@ -72,66 +72,81 @@ StyledRect {
         Layout.fillWidth: true
         spacing: Appearance.spacing.small
 
-            Toggle {
-                icon: "wifi"
-                checked: Network.wifiEnabled
-                onClicked: Network.toggleWifi()
-            }
+        Repeater {
+            model: parent.rowModel
 
-            Toggle {
-                icon: "bluetooth"
-                checked: Bluetooth.defaultAdapter?.enabled ?? false
-                onClicked: {
-                    const adapter = Bluetooth.defaultAdapter;
-                    if (adapter)
-                        adapter.enabled = !adapter.enabled;
+            delegate: DelegateChooser {
+                role: "id"
+
+                DelegateChoice {
+                    roleValue: "wifi"
+                    delegate: Toggle {
+                        icon: "wifi"
+                        checked: Nmcli.wifiEnabled
+                        onClicked: Nmcli.toggleWifi()
+                    }
                 }
-            }
-
-            Toggle {
-                icon: "mic"
-                checked: !Audio.sourceMuted
-                onClicked: {
-                    const audio = Audio.source?.audio;
-                    if (audio)
-                        audio.muted = !audio.muted;
+                DelegateChoice {
+                    roleValue: "bluetooth"
+                    delegate: Toggle {
+                        icon: "bluetooth"
+                        checked: Bluetooth.defaultAdapter?.enabled ?? false
+                        onClicked: {
+                            const adapter = Bluetooth.defaultAdapter;
+                            if (adapter)
+                                adapter.enabled = !adapter.enabled;
+                        }
+                    }
                 }
-            }
-
-            Toggle {
-                icon: "settings"
-                inactiveOnColour: Colours.palette.m3onSurfaceVariant
-                toggle: false
-                onClicked: {
-                    root.visibilities.utilities = false;
-                    root.popouts.detach("network");
+                DelegateChoice {
+                    roleValue: "mic"
+                    delegate: Toggle {
+                        icon: "mic"
+                        checked: !Audio.sourceMuted
+                        onClicked: {
+                            const audio = Audio.source?.audio;
+                            if (audio)
+                                audio.muted = !audio.muted;
+                        }
+                    }
                 }
-            }
-
-            Toggle {
-                icon: "notifications_off"
-                checked: Notifs.dnd
-                onClicked: Notifs.dnd = !Notifs.dnd
-            }
-
-            //Toggle {
-                //icon: "gamepad"
-                //checked: GameMode.enabled
-                //onClicked: GameMode.enabled = !GameMode.enabled
-            //}
-
-            Toggle {
-                icon: "coffee"
-                checked: IdleInhibitor.enabled
-                onClicked: IdleInhibitor.enabled = !IdleInhibitor.enabled
-            }
-
-            Toggle {
-                icon: "vpn_key"
-                checked: VPN.connected
-                enabled: !VPN.connecting
-                visible: Config.utilities.vpn.provider.some(p => typeof p === "object" ? (p.enabled === true) : false)
-                onClicked: VPN.toggle()
+                DelegateChoice {
+                    roleValue: "settings"
+                    delegate: Toggle {
+                        icon: "settings"
+                        inactiveOnColour: Colours.palette.m3onSurfaceVariant
+                        toggle: false
+                        onClicked: {
+                            root.visibilities.utilities = false;
+                            root.popouts.detach("network");
+                        }
+                    }
+                }
+                DelegateChoice {
+                    roleValue: "dnd"
+                    delegate: Toggle {
+                        icon: "notifications_off"
+                        checked: Notifs.dnd
+                        onClicked: Notifs.dnd = !Notifs.dnd
+                    }
+                }
+                DelegateChoice {
+                    roleValue: "vpn"
+                    delegate: Toggle {
+                        icon: "vpn_key"
+                        checked: VPN.connected
+                        enabled: !VPN.connecting
+                        onClicked: VPN.toggle()
+                    }
+                }
+                DelegateChoice {
+                    roleValue: "coffee"
+                    delegate: Toggle {
+                        icon: "coffee"
+                        checked: IdleInhibitor.enabled
+                        onClicked: IdleInhibitor.enabled = !IdleInhibitor.enabled
+                    }
+                }
             }
         }
     }
