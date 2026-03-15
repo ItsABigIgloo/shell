@@ -24,30 +24,30 @@ GridLayout {
 
     Resource {
         Layout.topMargin: Appearance.padding.large
-        icon: "memory"
+        icon: "developer_board"
         value: SystemUsage.cpuPerc
-        colour: Colours.palette.m3primary
+        colour: Colours.palette.m3error
     }
 
     Resource {
         Layout.topMargin: Appearance.padding.large
         icon: "thermostat"
         value: Math.min(1, SystemUsage.cpuTemp / 90)
-        colour: Colours.palette.m3secondary
+        colour: Colours.palette.m3error
     }
 
     Resource {
         Layout.bottomMargin: Appearance.padding.large
         icon: "memory_alt"
         value: SystemUsage.memPerc
-        colour: Colours.palette.m3secondary
+        colour: Colours.palette.m3error
     }
 
     Resource {
         Layout.bottomMargin: Appearance.padding.large
-        icon: "hard_disk"
+        icon: "hard_drive"
         value: SystemUsage.storagePerc
-        colour: Colours.palette.m3tertiary
+        colour: Colours.palette.m3error
     }
 
     component Resource: StyledRect {

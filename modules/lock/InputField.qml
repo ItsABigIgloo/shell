@@ -44,7 +44,7 @@ Item {
                 return qsTr("Loading...");
             if (root.pam.state === "max")
                 return qsTr("You have reached the maximum number of tries");
-            return qsTr("Enter your password");
+            return qsTr("Enter your PIN");
         }
 
         animate: true

@@ -14,7 +14,7 @@ Item {
 
     anchors.left: parent.left
     anchors.right: parent.right
-    implicitHeight: layout.implicitHeight
+    implicitHeight: layout.implicitHeight * 1.5
 
     Image {
         anchors.fill: parent
@@ -69,7 +69,7 @@ Item {
 
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.margins: Appearance.padding.large
+        anchors.margins: Appearance.padding.large * 2 
 
         StyledText {
             Layout.topMargin: Appearance.padding.large
@@ -157,6 +157,7 @@ Item {
         Layout.preferredWidth: implicitWidth + (controlState.pressed ? Appearance.padding.normal * 2 : active ? Appearance.padding.small * 2 : 0)
         implicitWidth: controlIcon.implicitWidth + Appearance.padding.large * 2
         implicitHeight: controlIcon.implicitHeight + Appearance.padding.normal * 2
+
 
         color: active ? Colours.palette[`m3${colour.toLowerCase()}`] : Colours.palette[`m3${colour.toLowerCase()}Container`]
         radius: active || controlState.pressed ? Appearance.rounding.normal : Math.min(implicitWidth, implicitHeight) / 2 * Math.min(1, Appearance.rounding.scale)

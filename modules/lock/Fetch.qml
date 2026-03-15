@@ -13,7 +13,7 @@ ColumnLayout {
     id: root
 
     anchors.fill: parent
-    anchors.margins: Appearance.padding.large * 2
+    anchors.margins: Appearance.padding.large 
     anchors.topMargin: Appearance.padding.large
 
     spacing: Appearance.spacing.small
@@ -21,10 +21,10 @@ ColumnLayout {
     RowLayout {
         Layout.fillWidth: true
         Layout.fillHeight: false
-        spacing: Appearance.spacing.normal
+        spacing: Appearance.spacing.small
 
         StyledRect {
-            implicitWidth: prompt.implicitWidth + Appearance.padding.normal * 2
+            implicitWidth: prompt.implicitWidth + Appearance.padding.normal * 2 
             implicitHeight: prompt.implicitHeight + Appearance.padding.normal * 2
 
             color: Colours.palette.m3primary
@@ -34,7 +34,7 @@ ColumnLayout {
                 id: prompt
 
                 anchors.centerIn: parent
-                text: ">"
+                text: "🪐"
                 font.pointSize: root.width > 400 ? Appearance.font.size.larger : Appearance.font.size.normal
                 color: Colours.palette.m3onPrimary
             }
@@ -42,7 +42,7 @@ ColumnLayout {
 
         MonoText {
             Layout.fillWidth: true
-            text: "caelestiafetch.sh"
+            text: "Caelestia OS"
             font.pointSize: root.width > 400 ? Appearance.font.size.larger : Appearance.font.size.normal
             elide: Text.ElideRight
         }
@@ -90,18 +90,18 @@ ColumnLayout {
                 active: root.height > (batLoader.active ? 200 : 110)
 
                 sourceComponent: FetchText {
-                    text: `WM  : ${SysInfo.wm}`
+                    text: `OS  : ${SysInfo.osPrettyName || SysInfo.osName}`
                 }
             }
 
-            WrappedLoader {
-                Layout.fillWidth: true
-                active: !batLoader.active || root.height > 110
+            //WrappedLoader {
+                //Layout.fillWidth: true 
+                //active: !batLoader.active || root.height > 110
 
-                sourceComponent: FetchText {
-                    text: `USER: ${SysInfo.user}`
-                }
-            }
+                //sourceComponent: FetchText {
+                    //text: `WM  : ${SysInfo.wm}`
+                //}
+            //}
 
             FetchText {
                 text: `UP  : ${SysInfo.uptime}`

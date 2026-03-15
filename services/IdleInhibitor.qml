@@ -16,10 +16,10 @@ Singleton {
         if (enabled) {
             props.enabledSince = new Date();
             // Trigger notification for Enabled state
-            Toaster.toast(qsTr("Idle inhibitor enabled"), qsTr("The computer will not go to sleep or lock automatically"), "coffee");
+            Toaster.toast(qsTr("Idle inhibitor enabled"), qsTr("Locking and Sleep disabled."), "coffee");
         } else {
             // Trigger notification for Disabled state
-            Toaster.toast(qsTr("Idle inhibitor disabled"), qsTr("The computer will now sleep and lock automatically"), "coffee");
+            Toaster.toast(qsTr("Idle inhibitor disabled"), qsTr("The computer will now lock automatically"), "coffee");
         }
     }
 

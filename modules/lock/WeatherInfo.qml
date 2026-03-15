@@ -14,7 +14,7 @@ ColumnLayout {
 
     anchors.left: parent.left
     anchors.right: parent.right
-    anchors.margins: Appearance.padding.large * 2
+    anchors.margins: Appearance.padding.large
 
     spacing: Appearance.spacing.small
 
@@ -27,7 +27,7 @@ ColumnLayout {
         visible: active
 
         sourceComponent: StyledText {
-            text: qsTr("Weather")
+            text: qsTr("Local Weather")
             color: Colours.palette.m3primary
             font.pointSize: Appearance.font.size.extraLarge
             font.weight: 500
@@ -42,7 +42,7 @@ ColumnLayout {
             animate: true
             text: Weather.icon
             color: Colours.palette.m3secondary
-            font.pointSize: Appearance.font.size.extraLarge * 2.5
+            font.pointSize: Appearance.font.size.large * 2.5
         }
 
         ColumnLayout {
@@ -115,7 +115,7 @@ ColumnLayout {
         visible: active
 
         sourceComponent: RowLayout {
-            spacing: Appearance.spacing.large
+            spacing: Appearance.spacing.large * 2
 
             Repeater {
                 model: {
@@ -135,7 +135,7 @@ ColumnLayout {
                     required property var modelData
 
                     Layout.fillWidth: true
-                    spacing: Appearance.spacing.small
+                    spacing: Appearance.spacing.normal
 
                     StyledText {
                         Layout.fillWidth: true
@@ -159,7 +159,7 @@ ColumnLayout {
                         Layout.alignment: Qt.AlignHCenter
                         text: Config.services.useFahrenheit ? `${forecastHour.modelData?.tempF ?? 0}°F` : `${forecastHour.modelData?.tempC ?? 0}°C`
                         color: Colours.palette.m3secondary
-                        font.pointSize: Appearance.font.size.larger
+                        font.pointSize: Appearance.font.size.normal
                     }
                 }
             }
