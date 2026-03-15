@@ -14,6 +14,30 @@ StyledRect {
     required property var visibilities
     required property Item popouts
 
+    readonly property var quickToggles: {
+        const seenIds = new Set();
+
+        return Config.utilities.quickToggles.filter(item => {
+            if (!item.enabled)
+                return false;
+            
+            if (seenIds.has(item.id)) {
+                return false;
+            }
+
+            if (item.id === "vpn") {
+                return Config.utilities.vpn.provider.some(p => 
+                    typeof p === "object" ? (p.enabled === true) : false
+                );
+            }
+
+            seenIds.add(item.id);
+            return true;
+        });
+    }
+    readonly property int splitIndex: Math.ceil(quickToggles.length / 2)
+    readonly property bool needExtraRow: quickToggles.length > 6
+
     Layout.fillWidth: true
     implicitHeight: layout.implicitHeight + Appearance.padding.large * 2
 
@@ -32,9 +56,21 @@ StyledRect {
             font.pointSize: Appearance.font.size.normal
         }
 
-        RowLayout {
-            Layout.alignment: Qt.AlignHCenter
-            spacing: Appearance.spacing.small
+        ToggleRow {
+            rowModel: root.needExtraRow ? root.quickToggles.slice(0, root.splitIndex) : root.quickToggles
+        }
+
+        ToggleRow {
+            visible: root.needExtraRow
+            rowModel: root.needExtraRow ? root.quickToggles.slice(root.splitIndex) : []
+        }
+    }
+
+    component ToggleRow: RowLayout {
+        property var rowModel: []
+
+        Layout.fillWidth: true
+        spacing: Appearance.spacing.small
 
             Toggle {
                 icon: "wifi"

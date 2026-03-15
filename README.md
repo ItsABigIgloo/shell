@@ -331,6 +331,11 @@ default, you must create it manually.
         }
     },
     "bar": {
+        "activeWindow": {
+            "compact": false,
+            "inverted": false,
+            "showOnHover": true
+        },
         "clock": {
             "background": false,
             "showDate": false,
@@ -419,6 +424,12 @@ default, you must create it manually.
             "specialWorkspaceIcons": [
                 {
                     "name": "steam",
+                    "icon": "sports_esports"
+                }
+            ],
+            "windowIcons": [
+                {
+                    "regex": "steam(_app_(default|[0-9]+))?",
                     "icon": "sports_esports"
                 }
             ]
@@ -622,7 +633,8 @@ default, you must create it manually.
         ]
     },
     "lock": {
-        "recolourLogo": false
+        "recolourLogo": false,
+        "hideNotifs": false
     },
     "notifs": {
         "actionOnClick": false,

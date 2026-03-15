@@ -1,3 +1,4 @@
+import qs.components
 import qs.components.effects
 import qs.services
 import qs.config
@@ -35,13 +36,10 @@ Item {
         }
     }
 
-    ColouredIcon {
+    Loader {
         anchors.centerIn: parent
         source: SysInfo.osLogo 
         implicitSize: Appearance.font.size.large * 1.2
         colour: Colours.palette.m3tertiary
     }
-
-    implicitWidth: Appearance.font.size.large * 1.2
-    implicitHeight: Appearance.font.size.large * 1.2
 }
