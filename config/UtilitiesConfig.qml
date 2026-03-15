@@ -17,6 +17,7 @@ JsonObject {
         property bool configLoaded: true
         property bool chargingChanged: true
         property bool gameModeChanged: true
+        property bool idleInhibitChanged: true
         property bool dndChanged: true
         property bool audioOutputChanged: true
         property bool audioInputChanged: true

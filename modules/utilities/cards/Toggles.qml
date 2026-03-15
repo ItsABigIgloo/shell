@@ -131,20 +131,20 @@ StyledRect {
                     }
                 }
                 DelegateChoice {
+                    roleValue: "gameMode"
+                    delegate: Toggle {
+                        icon: "coffee"
+                        checked: IdleInhibitor.enabled
+                        onClicked: IdleInhibitor.enabled = !IdleInhibitor.enabled
+                    }
+                }
+                DelegateChoice {
                     roleValue: "vpn"
                     delegate: Toggle {
                         icon: "vpn_key"
                         checked: VPN.connected
                         enabled: !VPN.connecting
                         onClicked: VPN.toggle()
-                    }
-                }
-                DelegateChoice {
-                    roleValue: "coffee"
-                    delegate: Toggle {
-                        icon: "coffee"
-                        checked: IdleInhibitor.enabled
-                        onClicked: IdleInhibitor.enabled = !IdleInhibitor.enabled
                     }
                 }
             }
