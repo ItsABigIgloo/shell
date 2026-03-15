@@ -30,14 +30,10 @@ ColumnLayout {
     }
 
     function checkPopout(y: real): void {
-<<<<<<< HEAD
-        if (popouts.currentName === "activewindow" && popouts.hasCurrent) {
-            return;
-=======
         // Prevent hover-events from closing the Overview or ActiveWindow popouts
         if ((popouts.currentName === "activewindow" || popouts.currentName === "overview") && popouts.hasCurrent) {
         return;
->>>>>>> origin/overview-popout
+        origin/overview-popout
         }
 
         const ch = childAt(width / 2, y) as WrappedLoader;
