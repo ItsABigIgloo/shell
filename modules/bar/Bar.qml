@@ -125,8 +125,8 @@ ColumnLayout {
                 roleValue: "logo"
                 delegate: WrappedLoader {
                     onLoaded: {
-                    if (item) {
-                        item.barRef = root;
+                        if (item) {
+                            item.barRef = root.popouts;
                         }
                     }
                     sourceComponent: OsIcon {}
