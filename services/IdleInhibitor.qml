@@ -3,6 +3,8 @@ pragma Singleton
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import qs.config // Ensure this is imported for Config access
+import Caelestia // Required for Toaster access
 
 Singleton {
     id: root
@@ -11,8 +13,14 @@ Singleton {
     readonly property alias enabledSince: props.enabledSince
 
     onEnabledChanged: {
-        if (enabled)
+        if (enabled) {
             props.enabledSince = new Date();
+            // Trigger notification for Enabled state
+            Toaster.toast(qsTr("Idle inhibitor enabled"), qsTr("The computer will not go to sleep or lock automatically"), "coffee");
+        } else {
+            // Trigger notification for Disabled state
+            Toaster.toast(qsTr("Idle inhibitor disabled"), qsTr("The computer will now sleep and lock automatically"), "coffee");
+        }
     }
 
     PersistentProperties {
