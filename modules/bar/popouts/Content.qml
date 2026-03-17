@@ -23,8 +23,6 @@ Item {
     Connections {
         target: Hypr
         function onToggleOverviewRequested() {
-            console.log("HEARD THE KEYBIND!"); // <-- Add this line
-            
             if (root.wrapper.hasCurrent && root.wrapper.currentName === "overview") {
                 root.wrapper.hasCurrent = false; 
             } else {
@@ -150,7 +148,7 @@ Item {
 
         Repeater {
             model: ScriptModel {
-                values: [...SystemTray.items.values]
+                values: SystemTray.items.values.filter(i => !Config.bar.tray.hiddenIcons.includes(i.id))
             }
 
             Popout {
