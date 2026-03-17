@@ -79,10 +79,6 @@ Singleton {
         dispatch(`workspace ${openSpecials[nextIndex].name}`);
     }
 
-    function monitorNames(): list<string> {
-        return monitors.values.map(e => e.name);
-    }
-
     function monitorFor(screen: ShellScreen): HyprlandMonitor {
         return Hyprland.monitorFor(screen);
     }

@@ -1,4 +1,3 @@
-import qs.components
 import qs.components.effects
 import qs.services
 import qs.config
@@ -7,14 +6,14 @@ import QtQuick
 
 Item {
     id: root
-
-    property var barRef: null
-
-    implicitWidth: Math.round(Appearance.font.size.large * 1.2)
-    implicitHeight: Math.round(Appearance.font.size.large * 1.2)
+    
+    property var barRef: null 
 
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
+        hoverEnabled: true
+        propagateComposedEvents: true 
         cursorShape: Qt.PointingHandCursor
         onClicked: {
             if (barRef) {
@@ -31,25 +30,11 @@ Item {
 
     Loader {
         anchors.centerIn: parent
-        sourceComponent: SysInfo.isDefaultLogo ? caelestiaLogo : distroIcon
+        source: SysInfo.osLogo 
+        implicitSize: Appearance.font.size.large * 1.6
+        colour: Colours.palette.m3tertiary
     }
 
-    Component {
-        id: caelestiaLogo
-
-        Logo {
-            implicitWidth: Math.round(Appearance.font.size.large * 1.6)
-            implicitHeight: Math.round(Appearance.font.size.large * 1.6)
-        }
-    }
-
-    Component {
-        id: distroIcon
-
-        ColouredIcon {
-            source: SysInfo.osLogo
-            implicitSize: Math.round(Appearance.font.size.large * 1.2)
-            colour: Colours.palette.m3tertiary
-        }
-    }
+    implicitWidth: Appearance.font.size.large * 1.6
+    implicitHeight: Appearance.font.size.large * 1.6
 }

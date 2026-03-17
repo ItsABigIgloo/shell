@@ -73,10 +73,6 @@ ColumnLayout {
                 popouts.hasCurrent = false;
                 item.expanded = true;
             }
-        } else if (id === "activeWindow" && Config.bar.popouts.activeWindow && Config.bar.activeWindow.showOnHover) {
-            popouts.currentName = id.toLowerCase();
-            popouts.currentCenter = item.mapToItem(root, 0, itemHeight / 2).y;
-            popouts.hasCurrent = true;
         }
     }
 
@@ -125,8 +121,8 @@ ColumnLayout {
                 roleValue: "logo"
                 delegate: WrappedLoader {
                     onLoaded: {
-                        if (item) {
-                            item.barRef = root.popouts;
+                    if (item) {
+                        item.barRef = root;
                         }
                     }
                     sourceComponent: OsIcon {}
@@ -189,6 +185,7 @@ ColumnLayout {
             for (let i = 0; i < count; i++) {
                 const item = repeater.itemAt(i);
                 if (item?.enabled) return item;
+                if (item?.enabled) return item;
             }
             return null;
         }
@@ -196,6 +193,7 @@ ColumnLayout {
         function findLastEnabled(): Item {
             for (let i = repeater.count - 1; i >= 0; i--) {
                 const item = repeater.itemAt(i);
+                if (item?.enabled) return item;
                 if (item?.enabled) return item;
             }
             return null;
