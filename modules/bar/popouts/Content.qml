@@ -20,19 +20,6 @@ Item {
     implicitWidth: (currentPopout?.implicitWidth ?? 0) + Appearance.padding.large * 2
     implicitHeight: (currentPopout?.implicitHeight ?? 0) + Appearance.padding.large * 2
 
-    Connections {
-        target: Hypr
-        function onToggleOverviewRequested() {
-            if (root.wrapper.hasCurrent && root.wrapper.currentName === "overview") {
-                root.wrapper.hasCurrent = false; 
-            } else {
-                root.wrapper.currentName = "overview";
-                root.wrapper.currentCenter = root.wrapper.screen.height / 2;
-                root.wrapper.hasCurrent = true;
-            }
-        }
-    }
-
     Item {
         id: content
 

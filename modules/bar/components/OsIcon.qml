@@ -15,26 +15,33 @@ Item {
         hoverEnabled: true
         propagateComposedEvents: true 
         cursorShape: Qt.PointingHandCursor
-        onClicked: {
-            if (barRef) {
-                if (barRef.hasCurrent && barRef.currentName === "overview") {
-                    barRef.hasCurrent = false;
+
+        onClicked: (mouse) => {
+            const name = "overview"
+            let p = typeof popouts !== "undefined" ? popouts : (barRef ? barRef.popouts : null);
+            
+            if (p) {
+                if (p.currentName === name && p.hasCurrent) {
+                    p.hasCurrent = false;
                 } else {
-                    barRef.currentName = "overview";
-                    barRef.currentCenter = barRef.screen.height / 2;
-                    barRef.hasCurrent = true;
+                    p.currentName = name;
+                    p.currentCenter = barRef.height / 2;
+                    p.hasCurrent = true;
                 }
+            } else {
+                console.error("OsIcon: Could not find popouts reference!");
             }
+            mouse.accepted = false; 
         }
     }
 
-    Loader {
+    ColouredIcon {
         anchors.centerIn: parent
         source: SysInfo.osLogo 
-        implicitSize: Appearance.font.size.large * 1.6
+        implicitSize: Appearance.font.size.large * 1.2
         colour: Colours.palette.m3tertiary
     }
 
-    implicitWidth: Appearance.font.size.large * 1.6
-    implicitHeight: Appearance.font.size.large * 1.6
+    implicitWidth: Appearance.font.size.large * 1.2
+    implicitHeight: Appearance.font.size.large * 1.2
 }
