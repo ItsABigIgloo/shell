@@ -1,4 +1,3 @@
-import qs.components
 import qs.components.effects
 import qs.services
 import qs.config
@@ -7,40 +6,42 @@ import QtQuick
 
 Item {
     id: root
-
-    implicitWidth: Math.round(Appearance.font.size.large * 1.2)
-    implicitHeight: Math.round(Appearance.font.size.large * 1.2)
+    
+    property var barRef: null 
 
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
+        hoverEnabled: true
+        propagateComposedEvents: true 
         cursorShape: Qt.PointingHandCursor
-        onClicked: {
-            const visibilities = Visibilities.getForActive();
-            visibilities.launcher = !visibilities.launcher;
+
+        onClicked: (mouse) => {
+            const name = "overview"
+            let p = typeof popouts !== "undefined" ? popouts : (barRef ? barRef.popouts : null);
+            
+            if (p) {
+                if (p.currentName === name && p.hasCurrent) {
+                    p.hasCurrent = false;
+                } else {
+                    p.currentName = name;
+                    p.currentCenter = barRef.height / 2;
+                    p.hasCurrent = true;
+                }
+            } else {
+                console.error("OsIcon: Could not find popouts reference!");
+            }
+            mouse.accepted = false; 
         }
     }
 
-    Loader {
+    ColouredIcon {
         anchors.centerIn: parent
-        sourceComponent: SysInfo.isDefaultLogo ? caelestiaLogo : distroIcon
+        source: SysInfo.osLogo 
+        implicitSize: Appearance.font.size.large * 1.6
+        colour: Colours.palette.m3tertiary
     }
 
-    Component {
-        id: caelestiaLogo
-
-        Logo {
-            implicitWidth: Math.round(Appearance.font.size.large * 1.6)
-            implicitHeight: Math.round(Appearance.font.size.large * 1.6)
-        }
-    }
-
-    Component {
-        id: distroIcon
-
-        ColouredIcon {
-            source: SysInfo.osLogo
-            implicitSize: Math.round(Appearance.font.size.large * 1.2)
-            colour: Colours.palette.m3tertiary
-        }
-    }
+    implicitWidth: Appearance.font.size.large * 1.6
+    implicitHeight: Appearance.font.size.large * 1.6
 }
