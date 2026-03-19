@@ -92,10 +92,6 @@ Item {
             property var paneLoaders: []
             readonly property int currentIndex: root.state.currentTab
             readonly property Item currentItem: paneLoaders[currentIndex]
-            readonly property Item currentItem: {
-                repeater.count; // Trigger update on count change
-                return repeater.itemAt(currentIndex);
-            }
 
             anchors.fill: parent
 
