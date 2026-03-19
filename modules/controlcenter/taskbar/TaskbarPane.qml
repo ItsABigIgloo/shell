@@ -71,6 +71,8 @@ Item {
     function saveConfig(entryIndex, entryEnabled) {
         Config.bar.activeWindow.compact = root.activeWindowCompact;
         Config.bar.activeWindow.inverted = root.activeWindowInverted;
+        Config.bar.clock.background = root.clockBackground;
+        Config.bar.clock.showDate = root.clockShowDate;
         Config.bar.clock.showIcon = root.clockShowIcon;
         Config.bar.persistent = root.persistent;
         Config.bar.showOnHover = root.showOnHover;
@@ -138,6 +140,7 @@ Item {
             anchors.leftMargin: Appearance.padding.large
             anchors.rightMargin: Appearance.padding.large
 
+            asynchronous: true
             sourceComponent: taskbarContentComponent
         }
     }
