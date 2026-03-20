@@ -200,6 +200,7 @@ ColumnLayout {
             return null;
         }
 
+        asynchronous: true
         Layout.alignment: Qt.AlignHCenter
         Layout.topMargin: findFirstEnabled() === this ? root.vPadding : 0
         Layout.bottomMargin: findLastEnabled() === this ? root.vPadding : 0
