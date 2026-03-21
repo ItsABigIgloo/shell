@@ -55,7 +55,7 @@ Variants {
             screen: scope.modelData
             name: "drawers"
             WlrLayershell.exclusionMode: ExclusionMode.Ignore
-            WlrLayershell.keyboardFocus: visibilities.launcher || visibilities.session || panels.dashboard.needsKeyboard ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+            WlrLayershell.keyboardFocus: visibilities.launcher || visibilities.session || visibilities.utilities || panels.dashboard.needsKeyboard ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
             mask: Region {
                 x: bar.clampedWidth + win.dragMaskPadding
@@ -97,6 +97,7 @@ Variants {
                     visibilities.launcher = false;
                     visibilities.session = false;
                     visibilities.sidebar = false;
+                    visibilities.utilities = false;
                     visibilities.dashboard = false;
                     panels.popouts.hasCurrent = false;
                     bar.closeTray();
