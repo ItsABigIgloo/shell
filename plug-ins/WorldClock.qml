@@ -13,14 +13,12 @@ StyledRect {
     radius: Appearance.rounding.normal
     color: Colours.tPalette.m3surfaceContainer
 
-    // Timer to refresh the clocks every second
     Timer {
         id: wallTimer
         interval: 1000
         running: true
         repeat: true
         onTriggered: {
-            // Forces a re-evaluation of the time strings
             localTime.text = Qt.formatTime(new Date(), "hh:mm:ss ap")
         }
     }
@@ -36,7 +34,6 @@ StyledRect {
             color: Colours.palette.m3onSurfaceVariant
         }
 
-        // Main Local Time
         StyledText {
             id: localTime
             Layout.alignment: Qt.AlignHCenter
@@ -46,24 +43,20 @@ StyledRect {
             color: Colours.palette.m3onSurface
         }
 
-        // Secondary Timezones
         Column {
             Layout.fillWidth: true
             spacing: 4
 
-            // Example: UTC / GMT
             TimeZoneRow { 
                 label: "UTC/GMT"
                 timeOffset: 0 
             }
             
-            // Example: New York (EDT is UTC-4)
             TimeZoneRow { 
                 label: "New York"
                 timeOffset: -4 
             }
             
-            // Example: Tokyo (JST is UTC+9)
             TimeZoneRow { 
                 label: "Tokyo"
                 timeOffset: 9 
@@ -71,7 +64,6 @@ StyledRect {
         }
     }
 
-    // Small helper component for the rows
     component TimeZoneRow : RowLayout {
         property string label: ""
         property int timeOffset: 0
@@ -86,7 +78,6 @@ StyledRect {
         }
         
         StyledText {
-            // Simple math to calculate offset time
             text: {
                 var d = new Date();
                 var utc = d.getTime() + (d.getTimezoneOffset() * 60000);

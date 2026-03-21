@@ -16,14 +16,7 @@ ColumnLayout {
     RowLayout {
         Layout.fillWidth: true
         
-        StyledText {
-            text: qsTr("PLUG-INS")
-            font.pointSize: Appearance.font.size.small
-            color: Colours.palette.m3onSurfaceVariant
-            Layout.leftMargin: Appearance.padding.small
-        }
-
-        Item { Layout.fillWidth: true } // Spacer
+        
 
         RowLayout {
             spacing: Appearance.spacing.small
@@ -40,6 +33,14 @@ ColumnLayout {
                 enabled: pluginCarousel.currentIndex > 0
             }
 
+            Item { Layout.fillWidth: true }
+            StyledText {
+            text: qsTr("Shell Widgets")
+            font.pointSize: Appearance.font.size.small
+            color: Colours.palette.m3onSurfaceVariant
+            Layout.leftMargin: Appearance.padding.small
+        }
+            Item { Layout.fillWidth: true }
             IconButton {
                 icon: "arrow_forward_ios"
                 font.pointSize: Appearance.font.size.normal
@@ -56,10 +57,9 @@ ColumnLayout {
     ListView {
         id: pluginCarousel
         Layout.fillWidth: true
-        interactive: folderModel.count > 1 // Only allow swiping if there's more than one plugin
+        interactive: folderModel.count > 1 
         implicitHeight: 180 
         orientation: ListView.Horizontal
-        currentIndex: Config.utilities.pluginIndex
 
         onCurrentIndexChanged: {
             if (Config.utilities.pluginIndex !== currentIndex) {
@@ -85,6 +85,12 @@ ColumnLayout {
             nameFilters: ["*.qml"]
             showDirs: false
             sortField: FolderListModel.FileName
+            
+            onStatusChanged: {
+                if (status === FolderListModel.Ready) {
+                    pluginCarousel.currentIndex = Config.utilities.pluginIndex
+                }
+            }
         }
 
         delegate: Item {

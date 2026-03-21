@@ -13,7 +13,6 @@ StyledRect {
     radius: Appearance.rounding.normal
     color: Colours.tPalette.m3surfaceContainer
 
-    // This property will be filled by the PluginLoader
     property var props 
 
     ColumnLayout {
