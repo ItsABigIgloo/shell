@@ -23,6 +23,10 @@ Item {
 
         IdleInhibit {}
 
+        PluginLoader {
+            Layout.fillWidth: true
+        }
+
         Record {
             props: root.props
             visibilities: root.visibilities
