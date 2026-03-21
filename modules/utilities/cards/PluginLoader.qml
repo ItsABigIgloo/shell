@@ -35,12 +35,13 @@ ColumnLayout {
 
             Item { Layout.fillWidth: true }
             StyledText {
-            text: qsTr("Shell Widgets")
-            font.pointSize: Appearance.font.size.small
-            color: Colours.palette.m3onSurfaceVariant
-            Layout.leftMargin: Appearance.padding.small
-        }
+                text: qsTr("Widgets")
+                font.pointSize: Appearance.font.size.normal
+                color: Colours.palette.m3onSurfaceVariant
+            }
+
             Item { Layout.fillWidth: true }
+
             IconButton {
                 icon: "arrow_forward_ios"
                 font.pointSize: Appearance.font.size.normal
@@ -84,7 +85,7 @@ ColumnLayout {
             folder: Qt.resolvedUrl("../../../plug-ins")
             nameFilters: ["*.qml"]
             showDirs: false
-            sortField: FolderListModel.FileName
+            sortField: FolderListModel.Name
             
             onStatusChanged: {
                 if (status === FolderListModel.Ready) {
