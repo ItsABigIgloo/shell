@@ -111,6 +111,7 @@ ColumnLayout {
 
     Repeater {
         id: repeater
+
         model: Config.bar.entries
 
         DelegateChooser {

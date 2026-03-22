@@ -11,6 +11,7 @@ Item {
     id: root
 
     required property PopoutState popouts
+    required property Item wrapper
     readonly property Popout currentPopout: content.children.find(c => c.shouldBeActive) ?? null
     readonly property Item current: currentPopout?.item ?? null
 
@@ -39,6 +40,13 @@ Item {
             sourceComponent: Network {
                 popouts: root.popouts
                 view: "wireless"
+            }
+        }
+
+        Popout {
+            name: "overview"
+            sourceComponent: Overview {
+                wrapper: root.wrapper
             }
         }
 
@@ -103,13 +111,6 @@ Item {
             name: "bluetooth"
             sourceComponent: Bluetooth {
                 popouts: root.popouts
-            }
-        }
-
-        Popout {
-            name: "overview"
-            sourceComponent: Overview {
-                wrapper: root.wrapper
             }
         }
 

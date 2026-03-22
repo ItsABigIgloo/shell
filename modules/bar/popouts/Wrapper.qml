@@ -113,6 +113,7 @@ Item {
 
         sourceComponent: Content {
             popouts: popoutState
+            wrapper: root
         }
     }
 
