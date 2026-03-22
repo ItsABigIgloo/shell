@@ -1,5 +1,6 @@
 pragma ComponentBehavior: Bound
 
+import Quickshell
 import QtQuick
 import qs.components
 import qs.components.controls
@@ -18,7 +19,7 @@ Item {
 
     readonly property int padding: Appearance.padding.large
     readonly property int rounding: Appearance.rounding.large
-    
+
     property alias search: search
 
     implicitWidth: listWrapper.width + padding * 2
