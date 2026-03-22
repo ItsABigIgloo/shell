@@ -15,42 +15,30 @@ ColumnLayout {
 
     RowLayout {
         Layout.fillWidth: true
-        
-        
+        Layout.alignment: Qt.AlignHCenter
+        spacing: Appearance.spacing.normal * 1.5
+        visible: folderModel.count > 1
 
-        RowLayout {
-            spacing: Appearance.spacing.small
-            visible: folderModel.count > 1
+        Repeater {
+            model: folderModel.count
 
-            IconButton {
-                icon: "arrow_back_ios"
-                font.pointSize: Appearance.font.size.normal
-                onClicked: {
-                    if(pluginCarousel.currentIndex > 0) {
-                        pluginCarousel.currentIndex--
-                    }
+            Rectangle {
+                id: dot
+                width: 8
+                height: 8
+                radius: 4
+                color: index === pluginCarousel.currentIndex 
+                       ? Colours.palette.m3primary 
+                       : Colours.palette.m3onSurfaceVariant
+                opacity: index === pluginCarousel.currentIndex ? 1.0 : 0.4
+
+                Behavior on color { ColorAnimation { duration: 200 } }
+                Behavior on opacity { OpacityAnimator { duration: 200 } }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: pluginCarousel.currentIndex = index 
                 }
-                enabled: pluginCarousel.currentIndex > 0
-            }
-
-            Item { Layout.fillWidth: true }
-            StyledText {
-                text: qsTr("Widgets")
-                font.pointSize: Appearance.font.size.normal
-                color: Colours.palette.m3onSurfaceVariant
-            }
-
-            Item { Layout.fillWidth: true }
-
-            IconButton {
-                icon: "arrow_forward_ios"
-                font.pointSize: Appearance.font.size.normal
-                onClicked: {
-                    if(pluginCarousel.currentIndex < folderModel.count - 1) {
-                        pluginCarousel.currentIndex++
-                    }
-                }
-                enabled: pluginCarousel.currentIndex < folderModel.count - 1
             }
         }
     }
@@ -71,18 +59,13 @@ ColumnLayout {
     
         snapMode: ListView.SnapToItem
         highlightRangeMode: ListView.ApplyRange
+        highlightMoveDuration: 0
         cacheBuffer: 2
         clip: true
 
-        Behavior on contentX {
-            Anim {
-                duration: Appearance.anim.durations.small
-            }
-        }
-
         model: FolderListModel {
             id: folderModel
-            folder: Qt.resolvedUrl("../../../plug-ins")
+            folder: Qt.resolvedUrl("../../../widgets")
             nameFilters: ["*.qml"]
             showDirs: false
             sortField: FolderListModel.Name

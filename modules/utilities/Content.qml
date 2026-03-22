@@ -23,7 +23,7 @@ Item {
 
         IdleInhibit {}
 
-        PluginLoader {
+        WidgetLoader {
             Layout.fillWidth: true
         }
 
