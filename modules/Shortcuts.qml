@@ -205,7 +205,5 @@ Scope {
         function error(title: string, message: string, icon: string): void {
             Toaster.toast(title, message, icon, Toast.Error);
         }
-
-        target: "toaster"
     }
 }
