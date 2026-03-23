@@ -1,10 +1,10 @@
-import Caelestia
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Caelestia
 import qs.components
-import qs.config
 import qs.services
+import qs.config
 
 Item {
     id: root
@@ -20,7 +20,6 @@ Item {
     onMathChanged: {
         if (root.math.length > 0)
             Qalculator.evalAsync(root.math);
-
     }
     implicitHeight: Config.launcher.sizes.itemHeight
     anchors.left: root.parent ? root.parent.left : undefined
@@ -98,11 +97,8 @@ Item {
                 opacity: innerStateLayer.containsMouse ? 1 : 0
 
                 Behavior on opacity {
-                    Anim {
-                    }
-
+                    Anim {}
                 }
-
             }
 
             MaterialIcon {
@@ -120,11 +116,7 @@ Item {
                 Anim {
                     easing.bezierCurve: Appearance.anim.curves.emphasized
                 }
-
             }
-
         }
-
     }
-
 }

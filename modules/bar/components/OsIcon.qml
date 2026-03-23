@@ -1,12 +1,13 @@
 import QtQuick
 import qs.components.effects
-import qs.config
 import qs.services
+import qs.config
 import qs.utils
 
 Item {
     id: root
 
+    property var popouts
     property var barRef: null
 
     implicitWidth: Appearance.font.size.large * 1.6
@@ -19,9 +20,9 @@ Item {
         hoverEnabled: true
         propagateComposedEvents: true
         cursorShape: Qt.PointingHandCursor
-        onClicked: (mouse) => {
+        onClicked: mouse => {
             const name = "overview";
-            let p = typeof popouts !== "undefined" ? popouts : (root.barRef ? root.barRef.popouts : null);
+            const p = (root.popouts !== undefined) ? root.popouts : (root.barRef ? root.barRef.popouts : null);
             if (p) {
                 if (p.currentName === name && p.hasCurrent) {
                     p.hasCurrent = false;
@@ -43,5 +44,4 @@ Item {
         implicitSize: Appearance.font.size.large * 1.6
         colour: Colours.palette.m3tertiary
     }
-
 }

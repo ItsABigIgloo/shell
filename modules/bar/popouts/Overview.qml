@@ -1,8 +1,8 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import Quickshell
 import QtQuick.Layouts
+import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Widgets
 import qs.components
@@ -77,18 +77,17 @@ Item {
                         Item {
                             id: minimapContainer
 
-                            anchors.fill: parent
-                            anchors.margins: 4
-                            clip: true
-
                             property var monitor: Hyprland.monitorFor(Quickshell.screens[0])
 
                             property real scaleX: width / (monitor ? monitor.width : 1920)
 
                             property real scaleY: height / (monitor ? monitor.height : 1080)
 
-                            Repeater {
+                            anchors.fill: parent
+                            anchors.margins: 4
+                            clip: true
 
+                            Repeater {
                                 model: Hypr.toplevels.values.filter(t => t.lastIpcObject?.workspace?.id === workspaceDelegate.workspaceId)
 
                                 delegate: Rectangle {
@@ -112,11 +111,12 @@ Item {
                                     clip: true
 
                                     IconImage {
-                                        anchors.centerIn: parent
-
                                         property real boxMin: Math.min(parent.width, parent.height)
 
                                         property real iconSize: Math.min(boxMin * 0.7, 24)
+
+                                        anchors.centerIn: parent
+
                                         implicitWidth: iconSize
                                         implicitHeight: iconSize
 
