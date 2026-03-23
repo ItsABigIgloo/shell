@@ -33,7 +33,7 @@ ColumnLayout {
     function checkPopout(y: real): void {
         // Prevent hover-events from closing the Overview or ActiveWindow popouts
         if ((popouts.currentName === "activewindow" || popouts.currentName === "overview") && popouts.hasCurrent) {
-        return;
+            return;
         }
 
         const ch = childAt(width / 2, y) as WrappedLoader;
@@ -127,8 +127,8 @@ ColumnLayout {
                 roleValue: "logo"
                 delegate: WrappedLoader {
                     onLoaded: {
-                    if (item) {
-                        item.barRef = root;
+                        if (item) {
+                            item.barRef = root;
                         }
                     }
                     sourceComponent: OsIcon {}
@@ -190,7 +190,8 @@ ColumnLayout {
             const count = repeater.count;
             for (let i = 0; i < count; i++) {
                 const item = repeater.itemAt(i);
-                if (item?.enabled) return item;
+                if (item?.enabled)
+                    return item;
             }
             return null;
         }
@@ -198,7 +199,8 @@ ColumnLayout {
         function findLastEnabled(): Item {
             for (let i = repeater.count - 1; i >= 0; i--) {
                 const item = repeater.itemAt(i);
-                if (item?.enabled) return item;
+                if (item?.enabled)
+                    return item;
             }
             return null;
         }

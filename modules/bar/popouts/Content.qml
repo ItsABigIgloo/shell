@@ -46,7 +46,9 @@ Item {
         Popout {
             name: "overview"
             sourceComponent: Overview {
-                wrapper: root.wrapper
+                property var wrapper_internal: root.wrapper
+
+                wrapper: wrapper_internal
             }
         }
 

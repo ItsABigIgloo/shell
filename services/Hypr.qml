@@ -40,7 +40,7 @@ Singleton {
     property string lastSpecialWorkspace: ""
 
     signal configReloaded
-    signal toggleOverviewRequested()
+    signal toggleOverviewRequested
 
     function dispatch(request: string): void {
         Hyprland.dispatch(request);
@@ -224,7 +224,7 @@ Singleton {
         onPressed: extras.refreshDevices()
         onReleased: extras.refreshDevices()
     }
-    
+
     HyprExtras {
         id: extras
     }
