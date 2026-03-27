@@ -17,6 +17,7 @@ Item {
         property bool recordingListExpanded: false
         property string recordingConfirmDelete
         property string recordingMode
+        property string notepadText: ""
 
         reloadableId: "utilities"
     }
@@ -79,6 +80,9 @@ Item {
 
     Loader {
         id: content
+
+        focus: true 
+        Keys.enabled: true
 
         asynchronous: true
         anchors.top: parent.top

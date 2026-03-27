@@ -321,6 +321,8 @@ Singleton {
         return {
             enabled: utilities.enabled,
             maxToasts: utilities.maxToasts,
+            notepadText: utilities.notepadText,
+            pluginIndex: utilities.pluginIndex,
             toasts: {
                 configLoaded: utilities.toasts.configLoaded,
                 chargingChanged: utilities.toasts.chargingChanged,

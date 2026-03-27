@@ -3,6 +3,8 @@ import Quickshell.Io
 JsonObject {
     property bool enabled: true
     property int maxToasts: 4
+    property string notepadText: ""
+    property int pluginIndex: 0
 
     property Sizes sizes: Sizes {}
     property Toasts toasts: Toasts {}
