@@ -31,6 +31,11 @@ ColumnLayout {
     }
 
     function checkPopout(y: real): void {
+        // Prevent hover-events from closing the Overview or ActiveWindow popouts
+        if ((popouts.currentName === "activewindow" || popouts.currentName === "overview") && popouts.hasCurrent) {
+            return;
+        }
+
         const ch = childAt(width / 2, y) as WrappedLoader;
 
         if (ch?.id !== "tray")
@@ -43,6 +48,7 @@ ColumnLayout {
 
         const id = ch.id;
         const top = ch.y;
+        const item = ch.item;
 
         if (id === "statusIcons" && Config.bar.popouts.statusIcons) {
             const items = (ch.item as StatusIcons).items;
@@ -120,6 +126,11 @@ ColumnLayout {
             DelegateChoice {
                 roleValue: "logo"
                 delegate: WrappedLoader {
+                    onLoaded: {
+                        if (item) {
+                            item.barRef = root;
+                        }
+                    }
                     sourceComponent: OsIcon {}
                 }
             }
@@ -196,8 +207,6 @@ ColumnLayout {
 
         asynchronous: true
         Layout.alignment: Qt.AlignHCenter
-
-        // Cursed ahh thing to add padding to first and last enabled components
         Layout.topMargin: findFirstEnabled() === this ? root.vPadding : 0
         Layout.bottomMargin: findLastEnabled() === this ? root.vPadding : 0
 
