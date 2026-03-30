@@ -2,10 +2,10 @@ pragma ComponentBehavior: Bound
 
 import ".."
 import "../effects"
-import qs.services
-import qs.config
 import QtQuick
 import QtQuick.Layouts
+import qs.services
+import qs.config
 
 Elevation {
     id: root
@@ -55,6 +55,7 @@ Elevation {
                         function onClicked(): void {
                             root.itemSelected(item.modelData);
                             root.active = item.modelData;
+                            item.modelData.clicked();
                             root.expanded = false;
                         }
 

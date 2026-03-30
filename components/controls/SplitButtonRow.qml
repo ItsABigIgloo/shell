@@ -1,18 +1,17 @@
 pragma ComponentBehavior: Bound
 
 import ".."
+import QtQuick
+import QtQuick.Layouts
 import qs.components
 import qs.services
 import qs.config
-import QtQuick
-import QtQuick.Layouts
 
 StyledRect {
     id: root
 
     required property string label
     property int expandedZ: 100
-    property bool enabled: true
 
     property alias menuItems: splitButton.menuItems
     property alias active: splitButton.active

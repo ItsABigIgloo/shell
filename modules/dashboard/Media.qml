@@ -1,16 +1,16 @@
 pragma ComponentBehavior: Bound
 
-import qs.components
-import qs.components.controls
-import qs.services
-import qs.utils
-import qs.config
-import Caelestia.Services
-import Quickshell
-import Quickshell.Services.Mpris
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Shapes
+import Quickshell
+import Quickshell.Services.Mpris
+import Caelestia.Services
+import qs.components
+import qs.components.controls
+import qs.services
+import qs.config
+import qs.utils
 
 Item {
     id: root
@@ -181,7 +181,7 @@ Item {
 
             anchors.fill: parent
 
-            source: Players.active?.trackArtUrl ?? "" // qmllint disable incompatible-type
+            source: Players.getArtUrl(Players.active)
             asynchronous: true
             fillMode: Image.PreserveAspectCrop
             sourceSize.width: width

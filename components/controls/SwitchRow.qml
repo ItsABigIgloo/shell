@@ -1,16 +1,15 @@
 import ".."
+import QtQuick
+import QtQuick.Layouts
 import qs.components
 import qs.services
 import qs.config
-import QtQuick
-import QtQuick.Layouts
 
 StyledRect {
     id: root
 
     required property string label
     required property bool checked
-    property bool enabled: true
     property var onToggled: function (checked) {}
 
     Layout.fillWidth: true
@@ -40,7 +39,7 @@ StyledRect {
             checked: root.checked
             enabled: root.enabled
             onToggled: {
-                root.onToggled(checked);
+                root.onToggled(checked); // qmllint disable use-proper-function
             }
         }
     }

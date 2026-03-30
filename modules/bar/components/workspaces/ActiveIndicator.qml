@@ -1,8 +1,8 @@
+import QtQuick
 import qs.components
 import qs.components.effects
 import qs.services
 import qs.config
-import QtQuick
 
 StyledRect {
     id: root
@@ -10,6 +10,7 @@ StyledRect {
     required property int activeWsId
     required property Repeater workspaces
     required property Item mask
+    required property bool fullscreen
 
     readonly property int currentWsIdx: {
         let i = activeWsId - 1;

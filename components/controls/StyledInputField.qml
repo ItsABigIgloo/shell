@@ -1,10 +1,10 @@
 pragma ComponentBehavior: Bound
 
 import ".."
+import QtQuick
 import qs.components
 import qs.services
 import qs.config
-import QtQuick
 
 Item {
     id: root
@@ -13,15 +13,15 @@ Item {
     property var validator: null
     property bool readOnly: false
     property int horizontalAlignment: TextInput.AlignHCenter
-    property int implicitWidth: 70
-    property bool enabled: true
 
     // Expose activeFocus through alias to avoid FINAL property override
     readonly property alias hasFocus: inputField.activeFocus
 
     signal textEdited(string text)
+
     signal editingFinished
 
+    implicitWidth: 70
     implicitHeight: inputField.implicitHeight + Appearance.padding.small * 2
 
     StyledRect {
@@ -61,13 +61,6 @@ Item {
             readOnly: root.readOnly
             enabled: root.enabled
 
-            Binding {
-                target: inputField
-                property: "text"
-                value: root.text
-                when: !inputField.activeFocus
-            }
-
             onTextChanged: {
                 root.text = text;
                 root.textEdited(text);
@@ -75,6 +68,13 @@ Item {
 
             onEditingFinished: {
                 root.editingFinished();
+            }
+
+            Binding {
+                target: inputField
+                property: "text"
+                value: root.text
+                when: !inputField.activeFocus
             }
         }
     }

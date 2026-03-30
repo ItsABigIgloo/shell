@@ -1,10 +1,10 @@
 pragma Singleton
 
-import qs.utils
-import Caelestia
+import QtQuick
 import Quickshell
 import Quickshell.Io
-import QtQuick
+import Caelestia
+import qs.utils
 
 Singleton {
     id: root
@@ -267,11 +267,13 @@ Singleton {
     function serializeNotifs(): var {
         return {
             expire: notifs.expire,
+            fullscreen: notifs.fullscreen,
             defaultExpireTimeout: notifs.defaultExpireTimeout,
             clearThreshold: notifs.clearThreshold,
             expandThreshold: notifs.expandThreshold,
             actionOnClick: notifs.actionOnClick,
-            groupPreviewNum: notifs.groupPreviewNum
+            groupPreviewNum: notifs.groupPreviewNum,
+            openExpanded: notifs.openExpanded
         };
     }
 
@@ -318,6 +320,24 @@ Singleton {
     }
 
     function serializeUtilities(): var {
+        const vpnProviders = [];
+        for (let i = 0; i < utilities.vpn.provider.length; i++) {
+            const p = utilities.vpn.provider[i];
+            const provider = {
+                displayName: p.displayName,
+                enabled: p.enabled,
+                iface: p.iface,
+                name: p.name
+            };
+            if (p.connectCmd && p.connectCmd.length > 0) {
+                provider.connectCmd = p.connectCmd;
+            }
+            if (p.disconnectCmd && p.disconnectCmd.length > 0) {
+                provider.disconnectCmd = p.disconnectCmd;
+            }
+            vpnProviders.push(provider);
+        }
+
         return {
             enabled: utilities.enabled,
             maxToasts: utilities.maxToasts,
@@ -325,6 +345,7 @@ Singleton {
             pluginIndex: utilities.pluginIndex,
             toasts: {
                 configLoaded: utilities.toasts.configLoaded,
+                fullscreen: utilities.toasts.fullscreen,
                 chargingChanged: utilities.toasts.chargingChanged,
                 gameModeChanged: utilities.toasts.gameModeChanged,
                 dndChanged: utilities.toasts.dndChanged,
@@ -338,7 +359,7 @@ Singleton {
             },
             vpn: {
                 enabled: utilities.vpn.enabled,
-                provider: utilities.vpn.provider
+                provider: vpnProviders
             },
             quickToggles: utilities.quickToggles
         };
@@ -365,7 +386,8 @@ Singleton {
             smartScheme: services.smartScheme,
             defaultPlayer: services.defaultPlayer,
             playerAliases: services.playerAliases,
-            showLyrics: services.showLyrics
+            showLyrics: services.showLyrics,
+            lyricsBackend: services.lyricsBackend
         };
     }
 
@@ -438,9 +460,9 @@ Singleton {
                 JSON.parse(text());
                 const elapsed = timer.elapsedMs();
                 // Only show toast for external changes (not our own saves) and when elapsed time is meaningful
-                if (adapter.utilities.toasts.configLoaded && !root.recentlySaved && elapsed > 0) {
-                    Toaster.toast(qsTr("Config loaded"), qsTr("Config loaded in %1ms").arg(elapsed), "rule_settings");
-                } else if (adapter.utilities.toasts.configLoaded && root.recentlySaved && elapsed > 0) {
+                if (adapter.utilities.toasts.configLoaded && !root.recentlySaved && elapsed > 0) { // qmllint disable unresolved-type
+                    Toaster.toast(qsTr("Config loaded"), qsTr("Config loaded in %1ms").arg(elapsed), "rule_settings"); // qmllint disable unresolved-type
+                } else if (adapter.utilities.toasts.configLoaded && root.recentlySaved && elapsed > 0) { // qmllint disable unresolved-type
                     Toaster.toast(qsTr("Config saved"), qsTr("Config reloaded in %1ms").arg(elapsed), "rule_settings");
                 }
             } catch (e) {
@@ -453,7 +475,7 @@ Singleton {
         }
         onSaveFailed: err => Toaster.toast(qsTr("Failed to save config"), FileViewError.toString(err), "settings_alert", Toast.Error)
 
-        JsonAdapter {
+        JsonAdapter { // qmllint disable unresolved-type
             id: adapter
 
             property AppearanceConfig appearance: AppearanceConfig {}

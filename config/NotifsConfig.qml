@@ -2,7 +2,12 @@ import Quickshell.Io
 
 JsonObject {
     property bool expire: true
+<<<<<<< HEAD
     property int defaultExpireTimeout: 2500
+=======
+    property string fullscreen: "on"
+    property int defaultExpireTimeout: 5000
+>>>>>>> main
     property real clearThreshold: 0.3
     property int expandThreshold: 20
     property bool actionOnClick: false

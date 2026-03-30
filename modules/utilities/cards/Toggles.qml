@@ -1,13 +1,13 @@
 pragma ComponentBehavior: Bound
 
+import QtQuick
+import QtQuick.Layouts
+import Quickshell.Bluetooth
 import qs.components
 import qs.components.controls
 import qs.services
 import qs.config
 import qs.modules.bar.popouts as BarPopouts
-import Quickshell.Bluetooth
-import QtQuick
-import QtQuick.Layouts
 
 StyledRect {
     id: root
@@ -89,9 +89,9 @@ StyledRect {
                     roleValue: "bluetooth"
                     delegate: Toggle {
                         icon: "bluetooth"
-                        checked: Bluetooth.defaultAdapter?.enabled ?? false
+                        checked: Bluetooth.defaultAdapter?.enabled ?? false // qmllint disable unresolved-type
                         onClicked: {
-                            const adapter = Bluetooth.defaultAdapter;
+                            const adapter = Bluetooth.defaultAdapter; // qmllint disable unresolved-type
                             if (adapter)
                                 adapter.enabled = !adapter.enabled;
                         }
@@ -141,8 +141,10 @@ StyledRect {
                     roleValue: "vpn"
                     delegate: Toggle {
                         icon: "vpn_key"
-                        checked: VPN.connected
+                        checked: VPN.connected && VPN.status.state !== "needs-auth" && VPN.status.state !== "error"
                         enabled: !VPN.connecting
+                        toggle: VPN.status.state !== "needs-auth" && VPN.status.state !== "error"
+                        inactiveOnColour: Colours.palette.m3onSurfaceVariant
                         onClicked: VPN.toggle()
                     }
                 }
