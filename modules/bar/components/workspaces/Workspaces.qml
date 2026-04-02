@@ -12,6 +12,7 @@ StyledClippingRect {
     id: root
 
     required property ShellScreen screen
+    required property bool fullscreen
 
     Component.onCompleted: Tour.register("taskbar-workspaces", layout)
     Component.onDestruction: Tour.unregister("taskbar-workspaces")
@@ -39,6 +40,7 @@ StyledClippingRect {
         anchors.fill: parent
         scale: root.onSpecial ? 0.8 : 1
         opacity: root.onSpecial ? 0.5 : 1
+        visible: !root.fullscreen
 
         layer.enabled: root.blur > 0
         layer.effect: MultiEffect {
@@ -89,6 +91,7 @@ StyledClippingRect {
                 activeWsId: root.activeWsId
                 workspaces: workspaces
                 mask: layout
+                fullscreen: root.fullscreen
             }
         }
 
