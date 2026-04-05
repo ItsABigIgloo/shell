@@ -13,8 +13,11 @@ Singleton {
     property bool enabled: true
     property bool dangerous: false
 
-    // This is your access point!
-    // You can call InstallerWindowFactory.create() from your launcher.
+    function onClicked(list: var): void {
+        create(null, {});
+        list?.close();
+    }
+
     function create(parent: Item, props: var): void {
         installerWindowWrapper.createObject(parent ?? dummy, props);
     }
@@ -29,10 +32,11 @@ Singleton {
         FloatingWindow {
             id: win
 
+            visible: true
             // Set specific dimensions for the installer
-            implicitWidth: 800
-            implicitHeight: 600
-            minimumSize: Qt.size(600, 400)
+            implicitWidth: 1100
+            implicitHeight: 700
+            minimumSize: Qt.size(900, 700)
             color: "transparent"
             title: qsTr("Caelestia Installer")
 

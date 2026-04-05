@@ -6,46 +6,119 @@ import Quickshell
 import qs.components
 import qs.components.containers
 import qs.components.controls
+import qs.components.live
 import qs.config
+import qs.services
 import "pages"
 
 StyledRect {
     id: root
 
-    // Navigation State
-    property int currentIndex: 0
-    property bool canGoNext: false // Controls the 'Next' button enablement
+    property string currentPage: "welcome"
+    property bool navigationLocked: false
 
-    // Core Data to be passed to the Python Backend
-    property var installConfig: {
-        "timezone": "",
-        "username": "",
-        "password": "",
-        "targetDrive": ""
+    // Tracks our numerical position in the wizard
+    readonly property int currentStepIndex: pages.findIndex(p => p.id === currentPage)
+
+    // The global QtObject as the single source of truth
+    InstallerConfig {
+        id: sharedConfig
     }
 
-    width: 800
-    height: 600
+    width: 1000
+    height: 700 // Taller height for breathing room!
     color: Colours.layer(Colours.palette.m3surfaceContainer, 2)
-    radius: Appearance.rounding.normal
-    border.color: Colours.palette.m3outlineVariant
     border.width: 1
+    border.color: Colours.palette.m3outlineVariant
+    radius: Appearance.rounding.normal
 
-    // Step definitions [cite: 6]
-    readonly property list<var> steps: [
-        { id: "welcome", name: qsTr("Welcome"), component: welcomeStep },
-        { id: "timezone", name: qsTr("Timezone"), component: timezoneStep },
-        { id: "user", name: qsTr("User Setup"), component: userStep },
-        { id: "disk", name: qsTr("Select Disk"), component: diskStep },
-        { id: "summary", name: qsTr("Ready?"), component: summaryStep }
+    focus: true
+
+    // Keyboard Navigation (Arrow Keys)
+    Keys.onLeftPressed: {
+        if (root.navigationLocked)
+            return;
+        if (root.currentStepIndex > 0) {
+            root.navigationLocked = true;
+            root.currentPage = root.pages[root.currentStepIndex - 1].id;
+            navigationDebounceTimer.restart();
+        }
+    }
+    Keys.onRightPressed: {
+        if (root.navigationLocked)
+            return;
+        // Prevent using the right arrow key if the page isn't ready
+        if (currentPageLoader.item && !currentPageLoader.item.isReady)
+            return;
+
+        if (root.currentStepIndex >= 0 && root.currentStepIndex < root.pages.length - 2) {
+            root.navigationLocked = true;
+            root.currentPage = root.pages[root.currentStepIndex + 1].id;
+            navigationDebounceTimer.restart();
+        }
+    }
+
+    Timer {
+        id: navigationDebounceTimer
+        interval: 400
+        onTriggered: root.navigationLocked = false
+    }
+
+    readonly property list<var> pages: [
+        {
+            id: "welcome",
+            name: qsTr("Welcome"),
+            icon: "waving_hand",
+            source: "pages/WelcomeStep.qml"
+        },
+        {
+            id: "timezone",
+            name: qsTr("Timezone"),
+            icon: "public",
+            source: "pages/TimezoneStep.qml"
+        },
+        {
+            id: "user",
+            name: qsTr("User Setup"),
+            icon: "person_add",
+            source: "pages/UserStep.qml"
+        },
+        {
+            id: "software",
+            name: qsTr("Software"),
+            icon: "grid_view",
+            source: "pages/SoftwareStep.qml"
+        },
+        {
+            id: "disk",
+            name: qsTr("Select Disk"),
+            icon: "storage",
+            source: "pages/DiskStep.qml"
+        },
+        {
+            id: "summary",
+            name: qsTr("Summary"),
+            icon: "fact_check",
+            source: "pages/SummaryStep.qml"
+        },
+        {
+            id: "progress",
+            name: qsTr("Installing"),
+            icon: "download",
+            source: "pages/ProgressStep.qml",
+            hidden: true // Keeps it off the top nav!
+        }
     ]
+
+    readonly property var currentPageData: pages.find(p => p.id === currentPage) ?? pages[0]
 
     ColumnLayout {
         anchors.fill: parent
         spacing: 0
 
-        // Header - Following Caelestia Branding
+        // --- TOP NAVIGATION BAR ---
         StyledRect {
+            id: topNav
             Layout.fillWidth: true
             Layout.preferredHeight: 60
             color: "transparent"
@@ -53,87 +126,360 @@ StyledRect {
             RowLayout {
                 anchors.fill: parent
                 anchors.leftMargin: Appearance.padding.large
+                anchors.rightMargin: Appearance.padding.large
+                spacing: Appearance.spacing.normal
 
                 StyledText {
-                    text: "Caelestia Installer"
+                    text: "Caelestia"
                     font.family: "Nunito"
                     font.pointSize: Appearance.font.size.large
-                    font.bold: true [cite: 14]
+                    font.bold: true
                     color: Colours.palette.m3onSurface
                 }
 
-                Item { Layout.fillWidth: true } // Spacer
+                // Tabs Area
+                StyledFlickable {
+                    id: tabsFlickable
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    contentWidth: tabsRow.width
+                    flickableDirection: Flickable.HorizontalFlick
+                    clip: true
+                    interactive: true
 
-                StyledText {
-                    text: steps[currentIndex].name
-                    color: Colours.palette.m3onSurfaceVariant
-                    anchors.rightMargin: Appearance.padding.large
+                    Behavior on contentX {
+                        Anim {
+                            duration: Appearance.anim.durations.normal
+                            easing.bezierCurve: Appearance.anim.curves.emphasized
+                        }
+                    }
+
+                    Item {
+                        width: Math.max(tabsFlickable.width, tabsRow.width)
+                        height: tabsFlickable.height
+
+                        StyledRect {
+                            id: activeIndicator
+
+                            property Item activeTab: {
+                                if (typeof tabsRepeater === "undefined")
+                                    return null;
+                                for (let i = 0; i < tabsRepeater.count; i++) {
+                                    const tab = tabsRepeater.itemAt(i);
+                                    if (tab && tab.isActive)
+                                        return tab;
+                                }
+                                return null;
+                            }
+
+                            visible: activeTab !== null
+                            color: Colours.palette.m3primary
+                            radius: Appearance.rounding.small
+
+                            x: activeTab ? activeTab.x : 0
+                            width: activeTab ? activeTab.width : 0
+                            height: 32
+                            anchors.verticalCenter: parent.verticalCenter
+
+                            Behavior on x {
+                                Anim {
+                                    duration: Appearance.anim.durations.normal
+                                    easing.bezierCurve: Appearance.anim.curves.emphasized
+                                }
+                            }
+                            Behavior on width {
+                                Anim {
+                                    duration: Appearance.anim.durations.normal
+                                    easing.bezierCurve: Appearance.anim.curves.emphasized
+                                }
+                            }
+                        }
+
+                        Row {
+                            id: tabsRow
+                            anchors.verticalCenter: parent.verticalCenter
+                            spacing: Appearance.spacing.small
+                            z: 2
+
+                            Repeater {
+                                id: tabsRepeater
+                                model: root.pages
+
+                                delegate: Item {
+                                    id: tabsItem
+
+                                    required property var modelData
+                                    required property int index
+
+                                    property bool isActive: root.currentPage === modelData.id
+
+                                    // THE FIX: Hide this tab if the model dictates it
+                                    visible: !modelData.hidden
+                                    implicitWidth: visible ? tabContent.implicitWidth + (Appearance.padding.normal * 2) : 0
+                                    implicitHeight: visible ? 32 : 0
+
+                                    StateLayer {
+                                        anchors.fill: parent
+                                        radius: Appearance.rounding.small
+
+                                        onClicked: {
+                                            root.currentPage = tabsItem.modelData.id;
+
+                                            const targetX = tabsItem.x - (tabsFlickable.width - tabsItem.width) / 2;
+                                            tabsFlickable.contentX = Math.max(0, Math.min(tabsFlickable.contentWidth - tabsFlickable.width, targetX));
+                                        }
+                                    }
+
+                                    Row {
+                                        id: tabContent
+                                        anchors.centerIn: parent
+                                        spacing: Appearance.spacing.smaller
+
+                                        MaterialIcon {
+                                            anchors.verticalCenter: parent.verticalCenter
+                                            text: tabsItem.modelData.icon
+                                            font.pointSize: Appearance.font.size.small
+                                            color: tabsItem.isActive ? Colours.palette.m3surface : Colours.palette.m3onSurfaceVariant
+                                        }
+
+                                        StyledText {
+                                            anchors.verticalCenter: parent.verticalCenter
+                                            text: tabsItem.modelData.name
+                                            font.pointSize: Appearance.font.size.small
+                                            color: tabsItem.isActive ? Colours.palette.m3surface : Colours.palette.m3onSurfaceVariant
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                IconButton {
+                    icon: "close"
+                    type: IconButton.Text
+                    radius: Appearance.rounding.small
+                    padding: Appearance.padding.small
+                    onClicked: QsWindow.window.destroy()
                 }
             }
         }
 
-        // Main Content Area
+        // --- CONTENT AREA WITH SLIDE TRANSITIONS ---
         Item {
+            id: contentArea
             Layout.fillWidth: true
             Layout.fillHeight: true
             clip: true
 
-            Loader {
-                id: stepLoader
+            StyledRect {
                 anchors.fill: parent
-                anchors.margins: Appearance.padding.large
-                sourceComponent: steps[currentIndex].component
+                anchors.margins: 16
+                color: Colours.palette.m3background
+                radius: 12
+                z: -1
+            }
 
-                // Transitions between steps
-                Behavior on opacity { NumberAnimation { duration: 200 } }
+            property string activePage: "welcome"
+            property bool transitioning: false
+            property int direction: 0
+
+            function triggerTransition(targetId) {
+                if (transitioning || targetId === activePage)
+                    return;
+
+                // THE FIX: Added "progress" to the valid routing array
+                const pages = ["welcome", "timezone", "user", "software", "disk", "summary", "progress"];
+                const oldIdx = pages.indexOf(activePage);
+                const newIdx = pages.indexOf(targetId);
+
+                direction = newIdx > oldIdx ? 1 : -1;
+
+                nextPageLoader.source = root.pages.find(p => p.id === targetId).source;
+                nextPageContainer.x = direction > 0 ? contentArea.width : -contentArea.width;
+
+                nextPageContainer.z = 2;
+                currentPageContainer.z = 1;
+
+                transitioning = true;
+                slideAnimation.start();
+            }
+
+            SequentialAnimation {
+                id: slideAnimation
+
+                ParallelAnimation {
+                    NumberAnimation {
+                        target: currentPageContainer
+                        property: "x"
+                        to: contentArea.direction > 0 ? -100 : 100
+                        duration: 350
+                        easing.type: Easing.OutCubic
+                    }
+                    NumberAnimation {
+                        target: currentPageContainer
+                        property: "opacity"
+                        to: 0
+                        duration: 300
+                    }
+
+                    NumberAnimation {
+                        target: nextPageContainer
+                        property: "x"
+                        to: 0
+                        duration: 350
+                        easing.type: Easing.OutCubic
+                    }
+                    NumberAnimation {
+                        target: nextPageContainer
+                        property: "opacity"
+                        to: 1
+                        duration: 300
+                    }
+                }
+
+                ScriptAction {
+                    script: {
+                        currentPageLoader.source = nextPageLoader.source;
+                        currentPageContainer.x = 0;
+                        currentPageContainer.opacity = 1;
+
+                        nextPageLoader.source = "";
+                        nextPageContainer.opacity = 0;
+
+                        contentArea.activePage = root.currentPage;
+                        contentArea.transitioning = false;
+                    }
+                }
+            }
+
+            // Current Page
+            Item {
+                id: currentPageContainer
+                anchors.fill: parent
+                anchors.margins: 24
+                opacity: 1
+                Loader {
+                    id: currentPageLoader
+                    anchors.fill: parent
+                    source: "pages/WelcomeStep.qml"
+                    onLoaded: if (item && item.hasOwnProperty("config"))
+                        item.config = sharedConfig
+                }
+            }
+
+            // Next Page (The Buffer)
+            Item {
+                id: nextPageContainer
+                width: parent.width
+                height: parent.height
+                x: parent.width
+                opacity: 0
+                Loader {
+                    id: nextPageLoader
+                    anchors.fill: parent
+                    anchors.margins: 24
+                    onLoaded: if (item && item.hasOwnProperty("config"))
+                        item.config = sharedConfig
+                }
+            }
+
+            Connections {
+                target: root
+                function onCurrentPageChanged() {
+                    contentArea.triggerTransition(root.currentPage);
+                }
             }
         }
 
-        // Footer Navigation
+        // --- BOTTOM NAVIGATION BAR ---
         StyledRect {
+            id: bottomNav
+            visible: root.currentPage !== "progress" // THE FIX: Hides during install
             Layout.fillWidth: true
-            Layout.preferredHeight: 80
-            color: Colours.layer(Colours.palette.m3surfaceContainer, 1)
+            Layout.preferredHeight: 72
+            color: "transparent"
+            border.width: 1
+            border.color: Colours.palette.m3outlineVariant
 
             RowLayout {
                 anchors.fill: parent
                 anchors.margins: Appearance.padding.large
+                spacing: Appearance.spacing.normal
 
-                Button {
-                    text: qsTr("Cancel")
-                    onClicked: QsWindow.window.destroy() [cite: 60]
+                // Back Button
+                StyledRect {
+                    Layout.preferredWidth: 120
+                    Layout.preferredHeight: 40
+                    color: parentContainsMouse ? Colours.palette.m3surfaceVariant : "transparent"
+                    border.width: 1
+                    border.color: Colours.palette.m3outlineVariant
+                    radius: Appearance.rounding.small
+                    visible: root.currentStepIndex > 0
+
+                    property bool parentContainsMouse: backMouseArea.containsMouse
+
+                    StyledText {
+                        anchors.centerIn: parent
+                        text: qsTr("Back")
+                        font.bold: true
+                        color: Colours.palette.m3onSurface
+                    }
+
+                    MouseArea {
+                        id: backMouseArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onClicked: {
+                            if (!contentArea.transitioning) {
+                                root.currentPage = root.pages[root.currentStepIndex - 1].id;
+                            }
+                        }
+                    }
                 }
 
-                Item { Layout.fillWidth: true }
-
-                Button {
-                    text: qsTr("Back")
-                    visible: currentIndex > 0
-                    onClicked: currentIndex--
+                // Spacer
+                Item {
+                    Layout.fillWidth: true
                 }
 
-                Button {
-                    id: nextButton
-                    text: currentIndex === steps.length - 1 ? qsTr("Install") : qsTr("Next")
-                    highlighted: true
-                    enabled: root.canGoNext
-                    onClicked: {
-                        if (currentIndex < steps.length - 1) {
-                            currentIndex++
-                        } else {
-                            // Trigger the Python backend installation script
-                            console.log("Starting install with: ", JSON.stringify(installConfig))
+                // Next / Install Button
+                StyledRect {
+                    Layout.preferredWidth: 120
+                    Layout.preferredHeight: 40
+                    radius: Appearance.rounding.small
+
+                    property bool isEnabled: currentPageLoader.item ? currentPageLoader.item.isReady : false
+
+                    color: isEnabled ? Colours.palette.m3primary : Colours.palette.m3surfaceVariant
+                    opacity: isEnabled ? 1.0 : 0.6
+
+                    StyledText {
+                        anchors.centerIn: parent
+                        text: root.currentStepIndex === root.pages.length - 2 ? qsTr("Install") : qsTr("Next")
+                        font.bold: true
+                        color: parent.isEnabled ? Colours.palette.m3onPrimary : Colours.palette.m3onSurfaceVariant
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        enabled: parent.isEnabled
+                        onClicked: {
+                            if (contentArea.transitioning)
+                                return;
+
+                            if (root.currentStepIndex < root.pages.length - 2) {
+                                // Move forward
+                                root.currentPage = root.pages[root.currentStepIndex + 1].id;
+                            } else {
+                                // TRIGGER THE INSTALLATION PROGRESS SCREEN
+                                console.log("--- INSTALLATION TRIGGERED ---");
+                                root.currentPage = "progress";
+                            }
                         }
                     }
                 }
             }
         }
     }
-
-    // Components for each page
-    Component { id: welcomeStep; Text { text: "Welcome to Caelestia"; color: "white" } }
-    Component { id: timezoneStep; Text { text: "Map goes here"; color: "white" } }
-    Component { id: userStep; Text { text: "User fields go here"; color: "white" } }
-    Component { id: diskStep; Text { text: "Disk selection goes here"; color: "white" } }
-    Component { id: summaryStep; Text { text: "Final Review"; color: "white" } }
 }
