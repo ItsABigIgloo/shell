@@ -477,7 +477,6 @@ Item {
             }
         }
 
-        // --- Bottom Flexible Spacer ---
         Item {
             Layout.fillHeight: true
         }

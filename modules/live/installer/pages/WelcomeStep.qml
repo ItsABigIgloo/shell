@@ -9,8 +9,6 @@ import qs.config
 Item {
     id: root
 
-    // THE FIX: Tell the main window we are instantly ready to proceed,
-    // and accept the config object so the Loader doesn't throw errors!
     property var config: ({})
     readonly property bool isReady: true
 
